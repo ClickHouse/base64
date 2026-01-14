@@ -12,7 +12,10 @@
 // These static function pointers are initialized once when the library is
 // first used, and remain in use for the remaining lifetime of the program.
 // The idea being that CPU features don't change at runtime.
-static struct codec codec = { NULL, NULL };
+static __thread struct codec codec = { NULL, NULL };
+/// ClickHouse-specific patch: 'codec' is thread-local, see
+/// - https://github.com/ClickHouse/ClickHouse/issues/94198
+/// - https://github.com/aklomp/base64/issues/65
 
 void
 base64_stream_encode_init (struct base64_state *state, int flags)
